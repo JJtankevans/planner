@@ -26,6 +26,12 @@ class HomeFragment : Fragment() {
 
         with(binding) {
             //TODO: logica da tela home
+            btnSaveNewPlannerActivity.setOnClickListener {
+                UpdatePlannerActivityDialogFragment().show(
+                    childFragmentManager,
+                    UpdatePlannerActivityDialogFragment.TAG
+                )
+            }
         }
     }
 
