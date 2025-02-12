@@ -25,7 +25,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
-            //TODO: logica da tela home
             btnSaveNewPlannerActivity.setOnClickListener {
                 UpdatePlannerActivityDialogFragment().show(
                     childFragmentManager,

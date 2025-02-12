@@ -30,7 +30,6 @@ class UserRegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
-            //TODO: logica da tela de cadastro de usuario
             btnSaveUser.setOnClickListener {
                 navController.navigate(R.id.action_userRegistrationFragment_to_homeFragment)
             }
