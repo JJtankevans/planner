@@ -1,17 +1,16 @@
 package com.vitoroliveira.planner.data.datasource
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 
-private const val USER_REGISTRATION_FILE_NAME = "üser_registration"
-private const val IS_USER_REGISTERED = "ïs_user_registered"
+private const val USER_REGISTRATION_FILE_NAME = "user_registration"
+private const val IS_USER_REGISTERED = "is_user_registered"
 
 class UserRegistrationLocalDataSourceImpl(
-    private val applicationContext: Application
-): UserRegistrationLocalDataSource {
+    private val applicationContext: Context
+) : UserRegistrationLocalDataSource {
 
-    val userRegistrationSharedPreferences: SharedPreferences =
+    private val userRegistrationSharedPreferences: SharedPreferences =
         applicationContext.getSharedPreferences(USER_REGISTRATION_FILE_NAME, Context.MODE_PRIVATE)
 
     override fun getIsUserRegistered(): Boolean {
