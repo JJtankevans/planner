@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.vitoroliveira.planner.R
 import com.vitoroliveira.planner.databinding.FragmentUserRegistrationBinding
+import com.vitoroliveira.planner.ui.viewmodel.UserRegistrationViewModel
 
 class UserRegistrationFragment : Fragment() {
     private var _binding: FragmentUserRegistrationBinding? = null
@@ -16,6 +18,8 @@ class UserRegistrationFragment : Fragment() {
     private val navController by lazy {
         findNavController()
     }
+
+    private val userRegistrationViewModel by viewModels<UserRegistrationViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +35,7 @@ class UserRegistrationFragment : Fragment() {
 
         with(binding) {
             btnSaveUser.setOnClickListener {
+                userRegistrationViewModel.saveIsUserRegistered(isUserRegistered = true)
                 navController.navigate(R.id.action_userRegistrationFragment_to_homeFragment)
             }
         }
