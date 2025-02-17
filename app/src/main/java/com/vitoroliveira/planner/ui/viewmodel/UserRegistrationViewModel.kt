@@ -49,6 +49,10 @@ class UserRegistrationViewModel: ViewModel() {
         //Se todos os campos forem nulos nao faz nada
         if(name == null && email == null && phone == null && image == null) return
 
+        /*
+        * Atualiza somente o campo em que ocorreu a mudança
+        * em seguida atualiza o _isProfileValid com base na funcao
+        * isValid do  ProfileModel */
         _profile.update { currentProfile ->
             val updatedProfile = currentProfile.copy(
                 name = name ?: currentProfile.name,

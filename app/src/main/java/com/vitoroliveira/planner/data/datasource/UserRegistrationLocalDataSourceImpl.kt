@@ -16,7 +16,7 @@ class UserRegistrationLocalDataSourceImpl(
     private val applicationContext: Context
 ) : UserRegistrationLocalDataSource {
 
-    val Context.profileProtoDataStore: DataStore<Profile> by dataStore(
+    private val Context.profileProtoDataStore: DataStore<Profile> by dataStore(
         fileName = PROFILE_FILE_NAME,
         serializer = ProfileSerializer
     )
