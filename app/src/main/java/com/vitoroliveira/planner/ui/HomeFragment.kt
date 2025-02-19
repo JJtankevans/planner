@@ -1,17 +1,21 @@
 package com.vitoroliveira.planner.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.vitoroliveira.planner.R
 import com.vitoroliveira.planner.data.utils.imageBase64ToBitMap
 import com.vitoroliveira.planner.databinding.FragmentHomeBinding
 import com.vitoroliveira.planner.ui.viewmodel.UserRegistrationViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -46,13 +50,37 @@ class HomeFragment : Fragment() {
 
     private fun setupObservers() {
         lifecycleScope.launch {
-            userRegistrationViewModel.profile.collect{ profile ->
-                binding.tvUserName.text = getString(R.string.ola_usuario, profile.name)
-                imageBase64ToBitMap(base64String = profile.image)?.let { imageBitmap ->
-                    binding.ivUserPhoto.setImageBitmap(imageBitmap)
+            launch {
+                userRegistrationViewModel.profile.collect { profile ->
+                    binding.tvUserName.text = getString(R.string.ola_usuario, profile.name)
+                    imageBase64ToBitMap(base64String = profile.image)?.let { imageBitmap ->
+                        binding.ivUserPhoto.setImageBitmap(imageBitmap)
+                    }
+                }
+            }
+            launch {
+                userRegistrationViewModel.isTokenValid.distinctUntilChanged { old, new ->
+                    old == new
+                }.collect { isTokenValid ->
+                    if (isTokenValid == false) showNewTokenSnackBar()
                 }
             }
         }
+    }
+
+    private fun showNewTokenSnackBar() {
+        Snackbar.make(
+            requireView(),
+            "Oopss... O seu token expirou.",
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(
+            "ÖBTER NOVO TOKEN"
+        ) {
+            userRegistrationViewModel.otainNewToken()
+        }
+            .setActionTextColor(
+                ContextCompat.getColor(requireContext(), R.color.lime_300)
+            ).show()
     }
 
     override fun onDestroy() {
