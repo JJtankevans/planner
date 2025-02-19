@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -28,10 +29,10 @@ class UserRegistrationFragment : Fragment() {
         findNavController()
     }
 
-    private val userRegistrationViewModel by viewModels<UserRegistrationViewModel>()
+    private val userRegistrationViewModel by activityViewModels<UserRegistrationViewModel>()
 
     private val pickMedia = registerForActivityResult(PickVisualMedia()) { uri ->
-        if(uri != null) {
+        if (uri != null) {
             val imageBitmap = requireContext().imageUriToBitmap(uri)
             imageBitmap?.let {
                 val imageBase64 = imageBitMapToBase64(bitmap = imageBitmap)
@@ -85,8 +86,9 @@ class UserRegistrationFragment : Fragment() {
             }
 
             btnSaveUser.setOnClickListener {
-                userRegistrationViewModel.saveProfile()
-                navController.navigate(R.id.action_userRegistrationFragment_to_homeFragment)
+                userRegistrationViewModel.saveProfile(onCompleted = {
+                    navController.navigate(R.id.action_userRegistrationFragment_to_homeFragment)
+                })
             }
         }
     }

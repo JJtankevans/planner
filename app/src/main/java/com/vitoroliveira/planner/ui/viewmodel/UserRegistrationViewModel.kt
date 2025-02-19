@@ -1,11 +1,13 @@
 package com.vitoroliveira.planner.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vitoroliveira.planner.data.datasource.AuthenticationLocalDataSource
 import com.vitoroliveira.planner.data.datasource.UserRegistrationLocalDataSource
 import com.vitoroliveira.planner.data.di.MainServiceLocator
 import com.vitoroliveira.planner.data.model.Profile
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +57,7 @@ class UserRegistrationViewModel : ViewModel() {
                     tokenExpirationDateTime?.let { tokenExpirationDateTime ->
                         val datetimeNow = System.currentTimeMillis()
                         _isTokenValid.value = tokenExpirationDateTime >= datetimeNow
+                        Log.d("CheckIsTokenValid", "viewModelScope: isTokenValid = ${_isTokenValid.value}")
                     }
                     delay(5_000)
                 }
@@ -93,16 +96,22 @@ class UserRegistrationViewModel : ViewModel() {
         }
     }
 
-    fun saveProfile() {
+    fun saveProfile(onCompleted: () -> Unit) {
         viewModelScope.launch {
-            userRegistrationLocalDataSource.saveProfile(profile = profile.value)
-            userRegistrationLocalDataSource.saveIsUserRegistered(isUserRegistered = true)
+            async {
+                userRegistrationLocalDataSource.saveProfile(profile = profile.value)
+                userRegistrationLocalDataSource.saveIsUserRegistered(isUserRegistered = true)
+                authenticationLocalDataSource.insertToken(token = mockToken)
+                _isTokenValid.value = true
+            }.await()
+            onCompleted()
         }
     }
 
-    fun otainNewToken() {
+    fun obtainNewToken() {
         viewModelScope.launch {
             authenticationLocalDataSource.insertToken(token = mockToken)
+            _isTokenValid.value = true
         }
     }
 }
